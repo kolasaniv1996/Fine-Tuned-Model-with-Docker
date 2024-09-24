@@ -1,0 +1,32 @@
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+# Load the fine-tuned model and tokenizer
+model = GPT2LMHeadModel.from_pretrained("./fine-tuned-gpt")
+tokenizer = GPT2Tokenizer.from_pretrained("./fine-tuned-gpt")
+
+# Set the model to evaluation mode
+model.eval()
+
+
+import torch
+def ask_question(prompt, max_length=50):
+    # Encode the prompt
+    input_ids = tokenizer.encode(prompt, return_tensors='pt')
+    
+    # Generate a response
+    with torch.no_grad():
+        output = model.generate(input_ids, max_length=max_length, num_return_sequences=1)
+
+    # Decode the generated tokens to a string
+    response = tokenizer.decode(output[0], skip_special_tokens=True)
+    return response
+
+# Example questions
+question1 = "What is machine learning?"
+response1 = ask_question(question1)
+print("Response:", response1)
+
+
+
+question2 = "How does fine-tuning work?"
+response2 = ask_question(question2)
+print("Response:", response2)
